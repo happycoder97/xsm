@@ -17,7 +17,13 @@ static const int XSM_CONSOLE_DURATION = XSM_SIMULATOR_DEFCONSOLE;
 int simulator_run()
 {
     // Ready
-    disk_init(_options_disk_file);
+    if(disk_init(_options_disk_file) != XSM_SUCCESS) {
+        printf("Could not initialize disk.\n");
+        printf("If you are following eXpOS roadmap, make sure your working directory\n"
+               "is myexpos/xsm, so that the file %s is accessible\n", _options_disk_file);
+        printf("Or manually specify the file using --disk-file /path/to/disk.xfs\n");
+        return XSM_FAILURE;
+    }
 
     // Set
     if (!machine_init(&_options))

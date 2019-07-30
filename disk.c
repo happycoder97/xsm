@@ -29,16 +29,12 @@ int disk_init(const char *filename)
     _file = fopen(filename, "rb+");
 
     if (_file)
-        fread(_disk_mem_copy, 1, _mem_size, _file);
-    else
     {
-        /* If the file does not exist, create one */
-        _file = fopen(filename, "wb+");
-        if (!_file)
-            return XSM_FAILURE;
+        fread(_disk_mem_copy, 1, _mem_size, _file);
+        return XSM_SUCCESS;
     }
-
-    return XSM_SUCCESS;
+    else
+        return XSM_FAILURE;
 }
 
 /* Writes page to the given block */
