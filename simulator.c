@@ -17,7 +17,7 @@ static const int XSM_CONSOLE_DURATION = XSM_SIMULATOR_DEFCONSOLE;
 int simulator_run()
 {
     // Ready
-    disk_init(XSM_DEFAULT_DISK);
+    disk_init(_options_disk_file);
 
     // Set
     if (!machine_init(&_options))
@@ -31,7 +31,7 @@ int simulator_run()
 
     // Finish
     machine_destroy();
-    disk_close();
+    disk_close(_options_disk_file);
     return XSM_SUCCESS;
 }
 
@@ -46,6 +46,7 @@ int simulator_parse_args(int argc, char **argv)
     _options.timer = XSM_TIMER_DURATION;
     _options.console = XSM_CONSOLE_DURATION;
     _options.disk = XSM_DISK_DURATION;
+    _options_disk_file = XSM_DEFAULT_DISK;
 
     while (argc > 0)
     {
@@ -102,6 +103,23 @@ int simulator_parse_args(int argc, char **argv)
                 exit(0);
             }
             _options.disk = val + 1;
+
+            argv++;
+            argc--;
+        }
+        else if (!strcmp(*argv, "--disk-file"))
+        {
+            argv++;
+            argc--;
+
+            FILE* f = fopen(*argv, "r");
+            if (f == NULL)
+            {
+                printf("Specified disk file can not be opened\n");
+                exit(0);
+            }
+            fclose(f);
+            _options_disk_file = *argv;
 
             argv++;
             argc--;

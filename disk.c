@@ -71,7 +71,7 @@ int disk_read_block(xsm_word *page, int block_num)
 }
 
 /* Deallocate the disk */
-int disk_close()
+int disk_close(const char *filename)
 {
     int result;
 
@@ -79,7 +79,7 @@ int disk_close()
     fclose(_file);
 
     /* Commit changes to disk */
-    _file = fopen(XSM_DEFAULT_DISK, "w");
+    _file = fopen(filename, "w");
     result = fwrite(_disk_mem_copy, 1, _mem_size, _file);
     fclose(_file);
 

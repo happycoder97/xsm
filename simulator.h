@@ -13,6 +13,7 @@
 #define EXIT_FAILURE 1
 
 static xsm_options _options;
+static const char* _options_disk_file;
 
 int simulator_run();
 int simulator_parse_args(int argc, char **argv);

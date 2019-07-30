@@ -11,6 +11,6 @@ int disk_init(const char *filename);
 int disk_write_page(xsm_word *page, int block_num);
 xsm_word *disk_get_block(int block);
 int disk_read_block(xsm_word *page, int block_num);
-int disk_close();
+int disk_close(const char *filename);
 
 #endif
