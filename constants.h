@@ -39,6 +39,6 @@
 #define XSM_INTERRUPT_DISK 2
 #define XSM_INTERRUPT_CONSOLE 3
 
-static const char *XSM_DEFAULT_DISK = "../xfs-interface/disk.xfs";
+#define XSM_DEFAULT_DISK "../xfs-interface/disk.xfs";
 
 #endif
