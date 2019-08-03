@@ -4,14 +4,19 @@ An interface for handling exceptions.
 
 #include "exception.h"
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 static xsm_exception _exception;
 
 /* Set the exception variables */
 int exception_set(char *message, int type, int mode)
 {
-    _exception.message = message;
+    if(_exception.message) {
+        free(_exception.message);
+    }
+    _exception.message = strdup(message);
     _exception.type = type;
     _exception.mode = mode;
 
