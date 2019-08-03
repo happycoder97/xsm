@@ -215,7 +215,12 @@ int machine_run()
         opcode = machine_get_opcode(token_info.str);
 
         if (opcode == XSM_ILLINSTR)
-            machine_register_exception("The instruction is not available in this architecture", EXP_ILLINSTR);
+        {
+            const char *message_fmt = "(%s) This instruction is not available in this architecture";
+            char message[1024];
+            sprintf(message, message_fmt, token_info.str);
+            machine_register_exception(message, EXP_ILLINSTR);
+        }
 
         if (machine_instr_req_privilege(opcode) == PRIVILEGE_KERNEL && machine_get_mode() == PRIVILEGE_USER)
             machine_register_exception("This instruction requires more privilege", EXP_ILLINSTR);
