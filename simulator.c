@@ -52,6 +52,7 @@ int simulator_parse_args(int argc, char **argv)
     _options.timer = XSM_TIMER_DURATION;
     _options.console = XSM_CONSOLE_DURATION;
     _options.disk = XSM_DISK_DURATION;
+    _options.stdin = stdin;
     _options_disk_file = XSM_DEFAULT_DISK;
 
     while (argc > 0)
@@ -126,6 +127,22 @@ int simulator_parse_args(int argc, char **argv)
             }
             fclose(f);
             _options_disk_file = *argv;
+
+            argv++;
+            argc--;
+        }
+        else if (!strcmp(*argv, "--stdin-file"))
+        {
+            argv++;
+            argc--;
+
+            FILE* f = fopen(*argv, "r");
+            if (f == NULL)
+            {
+                printf("Specified stdin file can not be opened\n");
+                exit(0);
+            }
+            _options.stdin = f;
 
             argv++;
             argc--;

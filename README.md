@@ -15,7 +15,7 @@ Run `make`.
 
 Running:
 --------
- `./xsm [--timer #1] [--disk #2] [--console #3] [--disk-file #4] [--debug #5]`
+ `./xsm [--timer #1] [--disk #2] [--console #3] [--disk-file #4] [--debug #5] [--stdin-file #6]`
 
 1. Syntax: `--timer value`  
     Semantics: This flag sets the number of user mode instructions after which 
@@ -47,3 +47,7 @@ Running:
     Any BRKP instruction in the program will be ignored by the machine if this flag is not set.  
     Further details are given in the section below.  
     The machine instruction INI gets enabled only in DEBUG mode. 
+
+6. Syntax: `--stdin-file path/to/file`  
+    Semantics: When executing IN instruction, read from this file instead of stdin of console.  
+    This helps to speed up testing and debugging when you have to type a long list of input to execute the program.  

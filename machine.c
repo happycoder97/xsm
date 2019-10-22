@@ -1260,7 +1260,7 @@ int machine_execute_in_do(xsm_word *word)
     int i;
     char input[XSM_WORD_SIZE];
 
-    fgets(input, XSM_WORD_SIZE, stdin);
+    fgets(input, XSM_WORD_SIZE, _theoptions.stdin);
 
     /* Kill the extra newline. */
     for (i = 0; i < XSM_WORD_SIZE; ++i)

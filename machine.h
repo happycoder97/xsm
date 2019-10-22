@@ -3,6 +3,7 @@
 #define XSM_MACHINE_H
 
 #include <setjmp.h>
+#include <stdio.h>
 
 #include "debug.h"
 #include "disk.h"
@@ -113,6 +114,7 @@ typedef struct _xsm_options
     int debug;
     int disk;
     int console;
+    FILE* stdin;
 } xsm_options;
 
 int machine_init(xsm_options *options);
