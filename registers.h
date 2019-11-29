@@ -64,4 +64,7 @@ int registers_store_integer(const char *name, int val);
 int registers_store_string(const char *name, char *str);
 int registers_umode(const char *reg);
 
+void registers_clone(xsm_reg regs_clone[XSM_NUM_REG]);
+void registers_set(xsm_reg *regs);
+
 #endif

@@ -35,12 +35,15 @@
 #define DEBUG_VAL 21
 #define DEBUG_WATCH 22
 #define DEBUG_WATCHCLEAR 23
-#define DEBUG_LIST 24
-#define DEBUG_PAGE 25
-#define DEBUG_EXIT 26
-#define DEBUG_HELP 27
+#define DEBUG_IP_WATCH 24
+#define DEBUG_IP_WATCHCLEAR 25
+#define DEBUG_LIST 26
+#define DEBUG_PAGE 27
+#define DEBUG_EXIT 28
+#define DEBUG_HELP 29
+#define DEBUG_RSTEP 30
 
-#define DEBUG_COUNT 28
+#define DEBUG_COUNT 31
 
 #define DEBUG_LOC_PT 28672
 #define MAX_PROC_NUM 16
@@ -91,6 +94,9 @@ typedef struct _debug_status
     int wp[16];
     int wp_size;
     char command[DEBUG_COMMAND_LEN];
+    /* IP Watchpoints: Triggered when IP == any of the given values */
+    int ip_wp[16];
+    int ip_wp_size;
 } debug_status;
 
 int debug_init();
@@ -135,6 +141,9 @@ int debug_display_val(char *mem);
 int debug_watch_add(int loc);
 void debug_watch_clear();
 int debug_watch_test(int mem_min, int mem_max);
+int debug_ip_watch_add(int loc);
+void debug_ip_watch_clear();
+int debug_ip_watch_test(int cur_ip);
 int debug_display_list();
 int debug_display_page(int ip);
 void debug_display_help();

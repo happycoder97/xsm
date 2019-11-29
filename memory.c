@@ -121,3 +121,11 @@ void memory_destroy()
 {
     free(_xsm_mem);
 }
+
+void memory_clone(xsm_word buf[XSM_MEMORY_SIZE]){
+    memcpy(buf, _xsm_mem, sizeof(xsm_word) * XSM_MEMORY_SIZE);
+}
+
+void memory_set(xsm_word buf[XSM_MEMORY_SIZE]) {
+    memcpy(_xsm_mem, buf, sizeof(xsm_word) * XSM_MEMORY_SIZE);
+}

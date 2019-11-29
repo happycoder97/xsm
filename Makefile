@@ -10,8 +10,8 @@ endif
 
 default: xsm
 
-xsm: lex.yy.o machine.o main.o simulator.o word.o memory.o registers.o tokenize.o disk.o debug.o exception.o
-	$(CC) $(CFLAGS) -o xsm lex.yy.o machine.o main.o simulator.o word.o memory.o registers.o tokenize.o disk.o debug.o exception.o $(LIBLEX)
+xsm: lex.yy.o machine.o main.o simulator.o word.o memory.o registers.o tokenize.o disk.o debug.o exception.o timetravel.o
+	$(CC) $(CFLAGS) -o xsm lex.yy.o machine.o main.o simulator.o word.o memory.o registers.o tokenize.o disk.o debug.o exception.o timetravel.o $(LIBLEX)
 
 lex.yy.c: parse.l
 	$(LEX) parse.l
@@ -48,6 +48,9 @@ exception.o: exception.c exception.h
 
 debug.o: debug.c debug.h
 	$(CC) $(CFLAGS) -c debug.c
+
+timetravel.o: timetravel.c timetravel.h
+	$(CC) $(CFLAGS) -c timetravel.c
 
 clean:
 	$(RM) *.o xsm lex.yy.c

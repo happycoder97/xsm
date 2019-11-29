@@ -147,3 +147,11 @@ int registers_umode(const char *reg)
 
     return TRUE;
 }
+
+void registers_clone(xsm_reg regs_clone[XSM_NUM_REG]) {
+    memcpy(regs_clone, _registers, sizeof(xsm_reg) * XSM_NUM_REG);
+}
+
+void registers_set(xsm_reg *regs) {
+    memcpy(_registers, regs, sizeof(xsm_reg) * XSM_NUM_REG);
+}

@@ -93,7 +93,6 @@ typedef struct _console_operation
 
 typedef struct _xsm_cpu
 {
-    xsm_reg *regs;
     int timer;
     int mode;
     int disk_state, disk_wait;
@@ -168,5 +167,9 @@ int machine_execute_iret();
 int machine_get_mode();
 void machine_set_mode(int mode);
 void machine_destroy();
+
+// Time travel debugging support
+xsm_cpu  machine_clone_state();
+void     machine_set_state(const xsm_cpu *cpu);
 
 #endif

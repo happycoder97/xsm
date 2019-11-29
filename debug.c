@@ -3,6 +3,7 @@ The XSM debugger.
 */
 
 #include "debug.h"
+#include "timetravel.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,10 +36,13 @@ const char *_db_commands_lh[] = {
     "val",
     "watch",
     "watchclear",
+    "ipwatch",
+    "ipwatchclear",
     "list",
     "page",
     "exit",
-    "help"};
+    "help",
+    "rstep"};
 
 const char *_db_commands_sh[] = {
     "s",
@@ -65,10 +69,13 @@ const char *_db_commands_sh[] = {
     "v",
     "w",
     "wc",
+    "ipw",
+    "ipwc",
     "l",
     "pg",
     "e",
-    "h"};
+    "h",
+    "rs"};
 
 /* Initialise debugger */
 int debug_init()
@@ -80,6 +87,7 @@ int debug_init()
     strcpy(_db_status.command, "help");
 
     debug_watch_clear();
+    debug_ip_watch_clear();
 
     return TRUE;
 }
@@ -99,8 +107,10 @@ void debug_deactivate()
 /* Called from machine for debugger */
 int debug_next_step(int curr_ip)
 {
+    timetravel_record();
+
     int mem_left, mem_right;
-    int wp = DEBUG_ERROR;
+    int wp = DEBUG_ERROR, ip_wp = DEBUG_ERROR;
 
     _db_status.prev_ip = _db_status.ip;
     _db_status.ip = curr_ip;
@@ -113,6 +123,13 @@ int debug_next_step(int curr_ip)
     if (wp >= 0)
     {
         printf("Watchpoint at %d has been triggered.\n", _db_status.wp[wp]);
+        _db_status.state = ON;
+    }
+
+    ip_wp = debug_ip_watch_test(curr_ip);
+    if(ip_wp >= 0)
+    {
+        printf("IP Watchpoint at %d has been triggered.\n", _db_status.ip_wp[ip_wp]);
         _db_status.state = ON;
     }
 
@@ -145,7 +162,7 @@ int debug_show_interface()
     else
         prev_instr[0] = '\0';
 
-    // Get the next instruction 
+    // Get the next instruction
     addr = machine_translate_address(_db_status.ip, FALSE, DEBUG_FETCH, machine_get_mode());
     if (addr >= 0)
         memory_retrieve_raw_instr(next_instr, addr);
@@ -153,7 +170,7 @@ int debug_show_interface()
         next_instr[0] = '\0';
 
     printf("Previous instruction at IP = %d: %s\n", _db_status.prev_ip, prev_instr);
-    printf("Mode: %s \t PID: %d\n", (machine_get_mode() == PRIVILEGE_KERNEL) ? "KERNEL" : "USER", debug_active_process());
+    printf("[%d] Mode: %s \t PID: %d\n", timetravel_cur_step(), (machine_get_mode() == PRIVILEGE_KERNEL) ? "KERNEL" : "USER", debug_active_process());
     printf("Next instruction at IP = %d, Page No. = %d: %s\n", _db_status.ip, _db_status.ip / XSM_PAGE_SIZE, next_instr);
 
     while (!done)
@@ -350,6 +367,22 @@ int debug_command(char *command)
         printf("Watch points cleared.\n");
         break;
 
+    case DEBUG_IP_WATCH:
+        arg1 = strtok(NULL, delim);
+        if (!arg1)
+            debug_invalid_cmd(command);
+        else
+        {
+            debug_ip_watch_add(atoi(arg1));
+            printf("IP Watch point added at %d.\n", atoi(arg1));
+        }
+        break;
+
+    case DEBUG_IP_WATCHCLEAR:
+        debug_ip_watch_clear();
+        printf("IP Watch points cleared.\n");
+        break;
+
     case DEBUG_LIST:
         debug_display_list();
         break;
@@ -365,6 +398,10 @@ int debug_command(char *command)
     case DEBUG_HELP:
         debug_display_help();
         break;
+
+    case DEBUG_RSTEP:
+        timetravel_rstep();
+        return TRUE;
 
     default:
         debug_invalid_cmd(command);
@@ -1164,6 +1201,36 @@ int debug_watch_test(int mem_left, int mem_right)
     return DEBUG_ERROR;
 }
 
+/* Debug ipwatch command */
+int debug_ip_watch_add(int ip)
+{
+    if (_db_status.ip_wp_size >= DEBUG_MAX_WP)
+        return FALSE;
+
+    _db_status.ip_wp[_db_status.ip_wp_size] = ip;
+    _db_status.ip_wp_size++;
+
+    return TRUE;
+}
+
+/* Debug ipwatchclear command */
+void debug_ip_watch_clear()
+{
+    _db_status.ip_wp_size = 0;
+}
+
+/* Check if any ip watch points have been triggered */
+int debug_ip_watch_test(int ip)
+{
+    int i;
+
+    for (i = 0; i < _db_status.ip_wp_size; ++i)
+        if (ip == _db_status.ip_wp[i])
+            return i;
+
+    return DEBUG_ERROR;
+}
+
 /* Debug list command */
 int debug_display_list()
 {
@@ -1238,3 +1305,4 @@ void debug_display_help()
     printf(" page / pg <address> \n\t Displays the Page Number and Offset for the given <address> \n");
     printf(" exit / e \n\t Exits the debug prompt and halts the machine \n");
 }
+

@@ -202,8 +202,10 @@ int machine_run()
         /* Pre-execute */
         ipval = word_get_integer(ipreg);
         machine_pre_execute(ipval);
+        ipval = word_get_integer(ipreg);
 
         token = tokenize_next_token(&token_info);
+
 
         /* IP = IP + instruction length */
         ipval = ipval + XSM_INSTRUCTION_SIZE;
@@ -240,6 +242,9 @@ int machine_run()
 /* Set the exception values */
 void machine_register_exception(char *message, int code)
 {
+    // Uncomment the following line to print the IP and message whenever an exception occurs
+    // printf("[%d] E(%d): %s\n", word_get_integer(machine_get_ipreg()), code, message);
+    // - FZN
     int mode = machine_get_mode();
     exception_set(message, code, mode);
 
@@ -1300,4 +1305,13 @@ void machine_destroy()
 {
     memory_destroy();
     registers_destroy();
+}
+
+xsm_cpu machine_clone_state() {
+    xsm_cpu cpu_clone = _thecpu;
+    return cpu_clone;
+}
+
+void     machine_set_state(const xsm_cpu *cpu) {
+    _thecpu = *cpu;
 }

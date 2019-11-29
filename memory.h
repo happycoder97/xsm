@@ -24,4 +24,7 @@ void memory_retrieve_raw_instr(char *dest, int address);
 xsm_word *memory_get_page(int page);
 void memory_destroy();
 
+void memory_clone(xsm_word buf[XSM_MEMORY_SIZE]);
+void memory_set(xsm_word buf[XSM_MEMORY_SIZE]);
+
 #endif
