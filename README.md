@@ -1,6 +1,11 @@
 XSM Simulator
 =============
 
+Note :
+-----
+This branch contains my version of xsm with various tweaks.
+It contains all of my unmerged pull requests and a basic reverse debugging support.
+
 **Introduction** : The XSM (eXperimental String Machine) Simulator is used to simulate the XSM hardware.
 
 Prerequisites :
